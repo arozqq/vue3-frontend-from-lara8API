@@ -22,7 +22,7 @@
                                     <td>{{post.content}}</td>
                                     <td class="text-center">
                                         <router-link :to="{name: 'post.edit', params:{id: post.id}}" class="btn btn-sm btn-warning">Edit</router-link>
-                                        <button class="btn btn-danger btn-sm mx-2">Delete</button>
+                                        <button @click.prevent="postDelete(post.id)" class="btn btn-danger btn-sm mx-2">Delete</button>
                                     </td>
 
                                 </tr>
@@ -59,8 +59,24 @@ import { onMounted, ref} from 'vue'
                 })
             })
 
+            // methode delete masih bermasalah
+            function postDelete(id) {
+                // delete post data by id
+                axios.delete(`http://lara8_api.test/api/post/${id}`)
+                .then(() => {
+                    // if success splice posts
+                    const index = this.post.findIndex(post => post.id === id)
+                    if (~ index) {
+                        this.post.splice(index, 1)
+                    }
+                }).catch(error => {
+                    console.log(error.response.data)
+                })
+            }
+
          return {
-            posts
+            posts,
+            postDelete
          }      
 
         }
